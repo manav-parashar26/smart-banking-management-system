@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Smart Banking Management System — Architecture Diagrams Presentation</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #090d16;
+      --card-bg: #0f172a;
+      --border: #1e293b;
+      --accent: #38bdf8;
+      --text: #f8fafc;
+      --text-muted: #94a3b8;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background-color: var(--bg);
+      color: var(--text);
+      font-family: 'Inter', -apple-system, sans-serif;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+    header {
+      background: var(--card-bg);
+      border-bottom: 1px solid var(--border);
+      padding: 1rem 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+    .header-title h1 {
+      font-size: 1.25rem;
+      font-weight: 800;
+      color: #fff;
+    }
+    .header-title p {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+    }
+    .nav-tabs {
+      display: flex;
+      gap: 0.5rem;
+      background: #090d16;
+      padding: 0.35rem;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+    }
+    .nav-btn {
+      background: transparent;
+      border: none;
+      color: var(--text-muted);
+      padding: 0.5rem 1rem;
+      font-size: 0.85rem;
+      font-weight: 600;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+    .nav-btn:hover {
+      color: #fff;
+      background: rgba(255,255,255,0.05);
+    }
+    .nav-btn.active {
+      background: #0284c7;
+      color: #fff;
+      box-shadow: 0 2px 8px rgba(2,132,199,0.4);
+    }
+    .viewer-container {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 1.5rem;
+      position: relative;
+    }
+    .slide-card {
+      width: 100%;
+      max-width: 1280px;
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.6);
+      display: none;
+    }
+    .slide-card.active {
+      display: block;
+      animation: fadeIn 0.25s ease-in-out;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(6px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .slide-header {
+      padding: 1rem 1.5rem;
+      background: #131d35;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .slide-header h2 {
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: #fff;
+    }
+    .slide-actions {
+      display: flex;
+      gap: 0.75rem;
+    }
+    .action-btn {
+      background: #1e293b;
+      border: 1px solid var(--border);
+      color: #cbd5e1;
+      padding: 0.4rem 0.75rem;
+      font-size: 0.75rem;
+      font-weight: 600;
+      border-radius: 6px;
+      cursor: pointer;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      transition: all 0.2s;
+    }
+    .action-btn:hover {
+      background: #334155;
+      color: #fff;
+    }
+    .svg-wrapper {
+      padding: 1rem;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background: #090d16;
+    }
+    .svg-wrapper img {
+      width: 100%;
+      height: auto;
+      max-height: 720px;
+      display: block;
+      border-radius: 8px;
+    }
+    footer {
+      padding: 1rem;
+      text-align: center;
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      border-top: 1px solid var(--border);
+      background: var(--card-bg);
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="header-title">
+      <h1>Smart Banking Management System</h1>
+      <p>Official Architecture Diagrams &amp; System Flowcharts (College Presentation Suite)</p>
+    </div>
+    <div class="nav-tabs">
+      <button class="nav-btn active" onclick="switchSlide(0)">1. System Architecture</button>
+      <button class="nav-btn" onclick="switchSlide(1)">2. Auth &amp; Security</button>
+      <button class="nav-btn" onclick="switchSlide(2)">3. DSA Architecture</button>
+      <button class="nav-btn" onclick="switchSlide(3)">4. Database (3NF)</button>
+    </div>
+  </header>
+
+  <main class="viewer-container">
+    <!-- Slide 1: System Architecture -->
+    <div class="slide-card active" id="slide-0">
+      <div class="slide-header">
+        <h2>1. Main 5-Tier System Architecture &amp; C++ Engine Subsystems</h2>
+        <div class="slide-actions">
+          <a href="01_system_architecture.svg" target="_blank" class="action-btn">&#128065; Open Raw SVG</a>
+          <a href="01_system_architecture.svg" download class="action-btn">&#11015; Download SVG</a>
+        </div>
+      </div>
+      <div class="svg-wrapper">
+        <img src="01_system_architecture.svg" alt="Main System Architecture">
+      </div>
+    </div>
+
+    <!-- Slide 2: Auth Flow -->
+    <div class="slide-card" id="slide-1">
+      <div class="slide-header">
+        <h2>2. Customer Authentication (PBKDF2) &amp; Admin Authorization (X-Admin-Key) Flow</h2>
+        <div class="slide-actions">
+          <a href="02_auth_security_flow.svg" target="_blank" class="action-btn">&#128065; Open Raw SVG</a>
+          <a href="02_auth_security_flow.svg" download class="action-btn">&#11015; Download SVG</a>
+        </div>
+      </div>
+      <div class="svg-wrapper">
+        <img src="02_auth_security_flow.svg" alt="Auth and Security Architecture">
+      </div>
+    </div>
+
+    <!-- Slide 3: DSA Architecture -->
+    <div class="slide-card" id="slide-2">
+      <div class="slide-header">
+        <h2>3. Data Structures &amp; Algorithms (DSA) Complexity &amp; Role Mapping</h2>
+        <div class="slide-actions">
+          <a href="03_dsa_architecture.svg" target="_blank" class="action-btn">&#128065; Open Raw SVG</a>
+          <a href="03_dsa_architecture.svg" download class="action-btn">&#11015; Download SVG</a>
+        </div>
+      </div>
+      <div class="svg-wrapper">
+        <img src="03_dsa_architecture.svg" alt="DSA Architecture">
+      </div>
+    </div>
+
+    <!-- Slide 4: Database Architecture -->
+    <div class="slide-card" id="slide-3">
+      <div class="slide-header">
+        <h2>4. Relational Database Architecture (MySQL Third Normal Form - 3NF)</h2>
+        <div class="slide-actions">
+          <a href="04_database_architecture.svg" target="_blank" class="action-btn">&#128065; Open Raw SVG</a>
+          <a href="04_database_architecture.svg" download class="action-btn">&#11015; Download SVG</a>
+        </div>
+      </div>
+      <div class="svg-wrapper">
+        <img src="04_database_architecture.svg" alt="Database Architecture">
+      </div>
+    </div>
+  </main>
+
+  <footer>
+    <p>Smart Banking Management System &bull; Full-Stack C++17 Winsock2 &amp; React 18 &bull; Ready for College Defense &amp; Examination</p>
+  </footer>
+
+  <script>
+    function switchSlide(index) {
+      document.querySelectorAll('.slide-card').forEach((card, idx) => {
+        card.classList.toggle('active', idx === index);
+      });
+      document.querySelectorAll('.nav-btn').forEach((btn, idx) => {
+        btn.classList.toggle('active', idx === index);
+      });
+    }
+
+    // Keyboard navigation (Arrow keys)
+    let currentSlide = 0;
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowRight' || e.key === 'Space') {
+        currentSlide = (currentSlide + 1) % 4;
+        switchSlide(currentSlide);
+      } else if (e.key === 'ArrowLeft') {
+        currentSlide = (currentSlide - 1 + 4) % 4;
+        switchSlide(currentSlide);
+      }
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,1232 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Smart Banking Management System â€” College Project Presentation</title>
+  <style>
+    :root {
+      --bg-dark: #090d16;
+      --card-bg: #0f172a;
+      --card-border: #1e293b;
+      --cyan: #38bdf8;
+      --cyan-glow: rgba(56, 189, 248, 0.15);
+      --emerald: #34d399;
+      --emerald-glow: rgba(52, 211, 153, 0.15);
+      --amber: #fbbf24;
+      --rose: #f43f5e;
+      --purple: #a78bfa;
+      --text-main: #f8fafc;
+      --text-muted: #94a3b8;
+      --text-sub: #cbd5e1;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: var(--bg-dark);
+      color: var(--text-main);
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+      overflow: hidden;
+      width: 100vw;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      user-select: none;
+    }
+
+    /* Presentation Header */
+    .pres-header {
+      height: 48px;
+      background: rgba(15, 23, 42, 0.85);
+      backdrop-filter: blur(8px);
+      border-bottom: 1px solid var(--card-border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 24px;
+      z-index: 100;
+      flex-shrink: 0;
+    }
+
+    .pres-title {
+      font-size: 14px;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+      color: var(--cyan);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .pres-controls {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .slide-badge {
+      background: #1e293b;
+      color: #38bdf8;
+      font-size: 12px;
+      font-weight: 700;
+      padding: 4px 10px;
+      border-radius: 6px;
+      border: 1px solid #334155;
+    }
+
+    .btn {
+      background: #1e293b;
+      color: var(--text-main);
+      border: 1px solid var(--card-border);
+      padding: 6px 12px;
+      border-radius: 6px;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.2s;
+    }
+    .btn:hover { background: #334155; border-color: var(--cyan); color: var(--cyan); }
+    .btn-primary { background: #0284c7; border-color: #38bdf8; color: white; }
+    .btn-primary:hover { background: #0369a1; }
+
+    /* Slide Deck Container */
+    .deck-container {
+      flex: 1;
+      position: relative;
+      width: 100%;
+      height: calc(100vh - 96px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      padding: 16px;
+    }
+
+    .slide {
+      position: absolute;
+      width: 100%;
+      max-width: 1560px;
+      height: 100%;
+      max-height: 880px;
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 12px;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.6);
+      padding: 40px 50px;
+      display: none;
+      flex-direction: column;
+      opacity: 0;
+      transition: opacity 0.25s ease-in-out;
+      overflow-y: auto;
+    }
+
+    .slide.active {
+      display: flex;
+      opacity: 1;
+    }
+
+    /* Slide Footer Navigation */
+    .pres-footer {
+      height: 48px;
+      background: rgba(15, 23, 42, 0.85);
+      backdrop-filter: blur(8px);
+      border-top: 1px solid var(--card-border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 24px;
+      z-index: 100;
+      flex-shrink: 0;
+    }
+
+    .nav-dots {
+      display: flex;
+      gap: 6px;
+      align-items: center;
+    }
+
+    .dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: #334155;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .dot.active {
+      background: var(--cyan);
+      width: 24px;
+      border-radius: 5px;
+      box-shadow: 0 0 8px var(--cyan);
+    }
+    .dot:hover:not(.active) {
+      background: #64748b;
+    }
+
+    /* Slide Content Typography */
+    .slide-header {
+      margin-bottom: 24px;
+      flex-shrink: 0;
+    }
+    .slide-num {
+      font-size: 12px;
+      font-weight: 800;
+      color: var(--cyan);
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      margin-bottom: 4px;
+    }
+    .slide-title {
+      font-size: 32px;
+      font-weight: 800;
+      color: var(--text-main);
+      letter-spacing: -0.5px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .slide-subtitle {
+      font-size: 15px;
+      color: var(--text-muted);
+      margin-top: 6px;
+      font-weight: 500;
+    }
+
+    .slide-body {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      gap: 20px;
+    }
+
+    /* Cards & Grids */
+    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+    .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+    .grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
+    .grid-5 { display: grid; grid-template-columns: repeat(5, 1fr); gap: 14px; }
+
+    .card {
+      background: rgba(15, 23, 42, 0.7);
+      border: 1px solid var(--card-border);
+      border-radius: 8px;
+      padding: 20px;
+      position: relative;
+    }
+    .card-cyan { border-top: 3px solid var(--cyan); }
+    .card-emerald { border-top: 3px solid var(--emerald); }
+    .card-amber { border-top: 3px solid var(--amber); }
+    .card-rose { border-top: 3px solid var(--rose); }
+    .card-purple { border-top: 3px solid var(--purple); }
+
+    .card h3 {
+      font-size: 16px;
+      font-weight: 700;
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .card-cyan h3 { color: var(--cyan); }
+    .card-emerald h3 { color: var(--emerald); }
+    .card-amber h3 { color: var(--amber); }
+    .card-rose h3 { color: var(--rose); }
+    .card-purple h3 { color: var(--purple); }
+
+    ul.clean-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      font-size: 13.5px;
+      color: var(--text-sub);
+      line-height: 1.5;
+    }
+    ul.clean-list li {
+      position: relative;
+      padding-left: 18px;
+    }
+    ul.clean-list li::before {
+      content: "â€¢";
+      position: absolute;
+      left: 2px;
+      color: var(--cyan);
+      font-weight: bold;
+      font-size: 16px;
+      line-height: 1;
+    }
+
+    /* Badges */
+    .badge {
+      display: inline-block;
+      padding: 4px 10px;
+      border-radius: 6px;
+      font-size: 12px;
+      font-weight: 700;
+      background: #1e293b;
+      border: 1px solid #334155;
+      color: var(--cyan);
+    }
+    .badge-emerald { color: var(--emerald); border-color: rgba(52, 211, 153, 0.4); background: rgba(6, 78, 59, 0.3); }
+    .badge-rose { color: var(--rose); border-color: rgba(244, 63, 94, 0.4); background: rgba(76, 5, 25, 0.3); }
+
+    /* Tables */
+    table.data-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13px;
+      background: #0f172a;
+      border-radius: 8px;
+      overflow: hidden;
+      border: 1px solid var(--card-border);
+    }
+    table.data-table th {
+      background: #1e293b;
+      color: var(--cyan);
+      padding: 10px 14px;
+      text-align: left;
+      font-weight: 700;
+      border-bottom: 1px solid #334155;
+    }
+    table.data-table td {
+      padding: 9px 14px;
+      border-bottom: 1px solid #1e293b;
+      color: var(--text-sub);
+    }
+    table.data-table tr:last-child td { border-bottom: none; }
+    table.data-table tr:hover td { background: rgba(30, 41, 59, 0.5); }
+
+    /* Diagram Frame */
+    .diagram-frame {
+      width: 100%;
+      flex: 1;
+      min-height: 420px;
+      max-height: 520px;
+      background: #090d16;
+      border: 1px solid var(--card-border);
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      padding: 8px;
+    }
+    .diagram-frame img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+    }
+
+    /* Workflow Stepper */
+    .workflow-strip {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+    .workflow-step {
+      flex: 1;
+      background: #1e293b;
+      border: 1px solid #334155;
+      padding: 14px 10px;
+      border-radius: 8px;
+      text-align: center;
+      position: relative;
+    }
+    .workflow-step.active {
+      border-color: var(--cyan);
+      background: rgba(2, 132, 199, 0.15);
+    }
+    .workflow-step .num {
+      font-size: 11px;
+      font-weight: 800;
+      color: var(--cyan);
+      text-transform: uppercase;
+      margin-bottom: 4px;
+    }
+    .workflow-step .name {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--text-main);
+    }
+    .workflow-arrow {
+      color: var(--cyan);
+      font-size: 18px;
+      font-weight: bold;
+    }
+
+    /* Code Snippet */
+    pre.code-box {
+      background: #090d16;
+      border: 1px solid var(--card-border);
+      border-radius: 6px;
+      padding: 12px 16px;
+      font-family: 'Consolas', 'Courier New', monospace;
+      font-size: 12.5px;
+      color: #38bdf8;
+      line-height: 1.45;
+      overflow-x: auto;
+    }
+
+    /* Note Box */
+    .alert-box {
+      background: rgba(30, 41, 59, 0.6);
+      border-left: 4px solid var(--cyan);
+      padding: 12px 18px;
+      border-radius: 0 6px 6px 0;
+      font-size: 13px;
+      color: var(--text-sub);
+    }
+    .alert-amber { border-left-color: var(--amber); }
+
+    /* Title Slide Specifics */
+    .title-slide {
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      background: radial-gradient(circle at center, #1e293b 0%, #0f172a 60%, #090d16 100%);
+    }
+    .title-slide h1 {
+      font-size: 46px;
+      font-weight: 900;
+      letter-spacing: -1px;
+      background: linear-gradient(135deg, #38bdf8 0%, #818cf8 50%, #34d399 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: 12px;
+    }
+    .title-slide h2 {
+      font-size: 20px;
+      font-weight: 600;
+      color: var(--text-sub);
+      margin-bottom: 30px;
+      border-bottom: none;
+    }
+    .meta-card {
+      background: rgba(15, 23, 42, 0.8);
+      border: 1px solid var(--card-border);
+      border-radius: 12px;
+      padding: 24px 36px;
+      display: inline-grid;
+      grid-template-columns: auto auto;
+      gap: 12px 28px;
+      text-align: left;
+      font-size: 14px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+    }
+    .meta-card .label { color: var(--text-muted); font-weight: 600; }
+    .meta-card .val { color: var(--text-main); font-weight: 700; }
+
+    /* Print Stylesheet for 16:9 PDF Export */
+    @media print {
+      @page {
+        size: 16in 9in;
+        margin: 0;
+      }
+      body {
+        width: 16in !important;
+        height: auto !important;
+        overflow: visible !important;
+        background: #090d16 !important;
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+      }
+      .pres-header, .pres-footer {
+        display: none !important;
+      }
+      .deck-container {
+        display: block !important;
+        padding: 0 !important;
+        width: 16in !important;
+        height: auto !important;
+      }
+      .slide {
+        display: flex !important;
+        opacity: 1 !important;
+        position: relative !important;
+        width: 16in !important;
+        height: 9in !important;
+        max-width: 16in !important;
+        max-height: 9in !important;
+        border-radius: 0 !important;
+        border: none !important;
+        page-break-after: always !important;
+        break-after: page !important;
+        overflow: hidden !important;
+        box-sizing: border-box !important;
+        padding: 40px 60px !important;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Top Header Navigation -->
+  <div class="pres-header">
+    <div class="pres-title">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+        <path d="M3 21h18M3 10h18M5 6l7-3 7 3M4 10v11M20 10v11M8 14v4M12 14v4M16 14v4"/>
+      </svg>
+      <span>Smart Banking Management System</span>
+    </div>
+    <div class="pres-controls">
+      <span class="slide-badge" id="slide-indicator">Slide 01 / 15</span>
+      <button class="btn" id="btn-fullscreen" title="Toggle Fullscreen (F)">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"/>
+        </svg>
+        <span>Fullscreen</span>
+      </button>
+      <button class="btn btn-primary" onclick="window.print()" title="Print or Save as PDF">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <polyline points="6 9 6 2 18 2 18 9"></polyline>
+          <path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path>
+          <rect x="6" y="14" width="12" height="8"></rect>
+        </svg>
+        <span>Export PDF</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- Main Slides Deck Container -->
+  <div class="deck-container">
+
+    <!-- SLIDE 1: TITLE -->
+    <div class="slide title-slide active" id="slide-1">
+      <div style="margin-bottom: 20px;">
+        <span class="badge" style="background: rgba(56, 189, 248, 0.1); border-color: #38bdf8; font-size: 13px; padding: 6px 14px;">
+          COLLEGE FINAL YEAR CAPSTONE PROJECT DEFENSE
+        </span>
+      </div>
+      <h1>Smart Banking Management System</h1>
+      <h2>A C++17 Full-Stack Banking System Using OOP, DSA, REST API, React &amp; MySQL</h2>
+
+      <div class="meta-card">
+        <div class="label">Student Name:</div>
+        <div class="val">[Student Name]</div>
+        <div class="label">Roll No / USN:</div>
+        <div class="val">[Roll Number / USN]</div>
+        <div class="label">Department:</div>
+        <div class="val">[Department of Computer Science &amp; Engineering]</div>
+        <div class="label">Institution:</div>
+        <div class="val">[College / University Name]</div>
+        <div class="label">Academic Year:</div>
+        <div class="val">[Academic Year 2025 - 2026]</div>
+      </div>
+
+      <div style="margin-top: 30px; display: flex; gap: 8px; justify-content: center; flex-wrap: wrap;">
+        <span class="badge">C++17 Engine</span>
+        <span class="badge">Winsock2 REST API</span>
+        <span class="badge">React 18 SPA</span>
+        <span class="badge">MySQL 3NF</span>
+        <span class="badge">Directed Graph + DFS</span>
+        <span class="badge">PBKDF2 Hashing</span>
+      </div>
+    </div>
+
+    <!-- SLIDE 2: PROBLEM STATEMENT -->
+    <div class="slide" id="slide-2">
+      <div class="slide-header">
+        <div class="slide-num">Slide 02</div>
+        <div class="slide-title">Problem Statement</div>
+        <div class="slide-subtitle">Bridging the divide between theoretical textbook algorithms and real-world banking systems</div>
+      </div>
+      <div class="slide-body">
+        <div class="grid-2">
+          <div class="card card-rose">
+            <h3>Traditional Academic Limitations</h3>
+            <ul class="clean-list">
+              <li><strong>Trivial CLI Scopes:</strong> Most educational banking projects focus strictly on primitive CLI balance mutations (add/subtract numbers).</li>
+              <li><strong>Monolithic Structures:</strong> Zero separation of concerns; accounts, ledgers, and credentials are often merged into flat structs.</li>
+              <li><strong>Insecure Credentials:</strong> Passwords and PINs are commonly stored as plaintext strings or rudimentary Caesar ciphers.</li>
+              <li><strong>Zero Concurrency &amp; Networking:</strong> No real-world web transport, network protocol handling, or REST APIs.</li>
+              <li><strong>Volatile or Flat Data:</strong> Inability to demonstrate relational algebra, ACID guarantees, or 3NF normalization.</li>
+            </ul>
+          </div>
+
+          <div class="card card-emerald">
+            <h3>The Smart Banking Enterprise Paradigm</h3>
+            <ul class="clean-list">
+              <li><strong>Full-Stack Architecture:</strong> Decoupled multi-tier system with C++17 core engine, Winsock2 REST API, and React 18 frontend.</li>
+              <li><strong>Advanced OOP &amp; Polymorphism:</strong> Abstract account hierarchies dynamically handling interest calculation and overdraft limits.</li>
+              <li><strong>Rigorously Benchmarked DSA:</strong> 9 STL containers and graph algorithms solving real financial throughput problems.</li>
+              <li><strong>Cryptographic Security:</strong> NIST SP 800-132 PBKDF2-HMAC-SHA256 salted PIN hashing with constant-time verification.</li>
+              <li><strong>Forensic AML Compliance:</strong> Directed transaction graph modeling with automated cycle detection for wash trading.</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SLIDE 3: OBJECTIVES -->
+    <div class="slide" id="slide-3">
+      <div class="slide-header">
+        <div class="slide-num">Slide 03</div>
+        <div class="slide-title">Project Objectives</div>
+        <div class="slide-subtitle">Concrete engineering deliverables achieved in the implementation</div>
+      </div>
+      <div class="slide-body">
+        <div class="grid-4">
+          <div class="card card-cyan">
+            <h3>1. Modular C++17 Engine</h3>
+            <p style="font-size: 13px; color: var(--text-sub); line-height: 1.5;">
+              Build a decoupled, thread-safe core engine using clean domain models, DTO contracts, and RAII memory safety.
+            </p>
+          </div>
+          <div class="card card-cyan">
+            <h3>2. OOP Principles</h3>
+            <p style="font-size: 13px; color: var(--text-sub); line-height: 1.5;">
+              Demonstrate dynamic polymorphism, abstract base classes, encapsulation, inheritance, and standardized exception handling.
+            </p>
+          </div>
+          <div class="card card-cyan">
+            <h3>3. Real-World DSA</h3>
+            <p style="font-size: 13px; color: var(--text-sub); line-height: 1.5;">
+              Implement and benchmark 9 STL structures and algorithms, delivering empirical proofs for theoretical Big-O complexities.
+            </p>
+          </div>
+          <div class="card card-cyan">
+            <h3>4. Cryptographic Auth</h3>
+            <p style="font-size: 13px; color: var(--text-sub); line-height: 1.5;">
+              Implement salted PBKDF2-HMAC-SHA256 (10,000 rounds) and constant-time verification with zero plaintext credentials.
+            </p>
+          </div>
+          <div class="card card-emerald">
+            <h3>5. Native REST API</h3>
+            <p style="font-size: 13px; color: var(--text-sub); line-height: 1.5;">
+              Engineer an embedded C++ Winsock2 HTTP server routing JSON requests and CORS negotiation without external web frameworks.
+            </p>
+          </div>
+          <div class="card card-emerald">
+            <h3>6. React 18 Interface</h3>
+            <p style="font-size: 13px; color: var(--text-sub); line-height: 1.5;">
+              Deliver a modern, responsive Single Page Application with customer authentication, transfer forms, and live AML graphs.
+            </p>
+          </div>
+          <div class="card card-emerald">
+            <h3>7. MySQL 3NF Database</h3>
+            <p style="font-size: 13px; color: var(--text-sub); line-height: 1.5;">
+              Formulate a Third Normal Form relational schema with cascade foreign keys, B-Tree indexes, and automated SQL dump sync.
+            </p>
+          </div>
+          <div class="card card-emerald">
+            <h3>8. Forensic AML Engine</h3>
+            <p style="font-size: 13px; color: var(--text-sub); line-height: 1.5;">
+              Model inter-account fund flows via directed graphs and detect circular routing rings via Depth-First Search (DFS).
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SLIDE 4: TECHNOLOGY STACK -->
+    <div class="slide" id="slide-4">
+      <div class="slide-header">
+        <div class="slide-num">Slide 04</div>
+        <div class="slide-title">Technology Stack</div>
+        <div class="slide-subtitle">Multi-tier modern fintech architecture built from first principles</div>
+      </div>
+      <div class="slide-body">
+        <div class="grid-5">
+          <div class="card card-cyan">
+            <h3>C++17 Backend</h3>
+            <ul class="clean-list">
+              <li><strong>ISO C++17</strong> Standard</li>
+              <li><strong>STL Containers:</strong> vector, map, queue, stack, set</li>
+              <li><strong>Networking:</strong> Winsock2 Multi-threaded Sockets</li>
+              <li><strong>JSON DAL:</strong> Custom Native Serializer/Parser</li>
+            </ul>
+          </div>
+          <div class="card card-emerald">
+            <h3>React 18 Frontend</h3>
+            <ul class="clean-list">
+              <li><strong>React 18</strong> SPA (Hooks)</li>
+              <li><strong>JavaScript (ES6+)</strong></li>
+              <li><strong>HTML5 Canvas &amp; SVG:</strong> Interactive Network Graph</li>
+              <li><strong>CSS3:</strong> Responsive Dark Fintech Theme</li>
+            </ul>
+          </div>
+          <div class="card card-amber">
+            <h3>MySQL 3NF</h3>
+            <ul class="clean-list">
+              <li><strong>MySQL 8.0+ / MariaDB</strong></li>
+              <li><strong>InnoDB Engine:</strong> Full ACID compliance</li>
+              <li><strong>3NF Normalization:</strong> Zero transitive redundancy</li>
+              <li><strong>B-Tree Indexes:</strong> Sub-ms query acceleration</li>
+            </ul>
+          </div>
+          <div class="card card-purple">
+            <h3>Dual Persistence</h3>
+            <ul class="clean-list">
+              <li><strong>Atomic Staging:</strong> .tmp write buffer</li>
+              <li><strong>Disaster Recovery:</strong> .bak mirror copies</li>
+              <li><strong>Atomic Swap:</strong> std::remove &amp; std::rename</li>
+              <li><strong>SQL Sync:</strong> Live data dump serialization</li>
+            </ul>
+          </div>
+          <div class="card card-rose">
+            <h3>Security &amp; Auth</h3>
+            <ul class="clean-list">
+              <li><strong>PBKDF2-HMAC-SHA256:</strong> 10,000 rounds</li>
+              <li><strong>CSPRNG Salt:</strong> 128-bit via CryptGenRandom</li>
+              <li><strong>Constant-Time:</strong> Bitwise XOR comparison</li>
+              <li><strong>Admin Middleware:</strong> X-Admin-Key filter</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SLIDE 5: SYSTEM ARCHITECTURE -->
+    <div class="slide" id="slide-5">
+      <div class="slide-header">
+        <div class="slide-num">Slide 05</div>
+        <div class="slide-title">Main System Architecture</div>
+        <div class="slide-subtitle">5-Tier End-to-End Enterprise Flow (docs/diagrams/01_system_architecture.svg)</div>
+      </div>
+      <div class="slide-body" style="flex-direction: row; gap: 24px; align-items: stretch;">
+        <div class="diagram-frame" style="flex: 1.4;">
+          <img src="../diagrams/01_system_architecture.svg" alt="System Architecture Diagram">
+        </div>
+        <div style="flex: 1; display: flex; flex-direction: column; gap: 10px; justify-content: center;">
+          <div class="card card-cyan" style="padding: 12px 16px;">
+            <h3 style="font-size: 14px; margin-bottom: 4px;">1. Client Presentation Layer</h3>
+            <p style="font-size: 12px; color: var(--text-sub);">React 18 Single Page Application rendering Customer Portals, Admin Dashboards, and SVG Graph visualizers.</p>
+          </div>
+          <div class="card card-emerald" style="padding: 12px 16px;">
+            <h3 style="font-size: 14px; margin-bottom: 4px;">2. Transport &amp; REST Layer</h3>
+            <p style="font-size: 12px; color: var(--text-sub);">Multi-threaded C++ Winsock2 HTTP Server on port 8080 routing JSON payloads and negotiating CORS pre-flight.</p>
+          </div>
+          <div class="card card-amber" style="padding: 12px 16px;">
+            <h3 style="font-size: 14px; margin-bottom: 4px;">3. Core Banking Engine</h3>
+            <p style="font-size: 12px; color: var(--text-sub);">BankSystem, CustomerManager, and SecurityHelper coordinating accounts, ledgers, and atomic operations.</p>
+          </div>
+          <div class="card card-purple" style="padding: 12px 16px;">
+            <h3 style="font-size: 14px; margin-bottom: 4px;">4. Analytics &amp; Compliance</h3>
+            <p style="font-size: 12px; color: var(--text-sub);">TransactionAnalytics, SmartAuditor, and TransactionGraph running DFS AML cycle detection.</p>
+          </div>
+          <div class="card card-rose" style="padding: 12px 16px;">
+            <h3 style="font-size: 14px; margin-bottom: 4px;">5. Dual Persistence Layer</h3>
+            <p style="font-size: 12px; color: var(--text-sub);">Resilient flat-file atomic disk persistence (.tmp/.bak) synchronized with a MySQL 3NF relational layer.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SLIDE 6: OOP DESIGN -->
+    <div class="slide" id="slide-6">
+      <div class="slide-header">
+        <div class="slide-num">Slide 06</div>
+        <div class="slide-title">Object-Oriented Programming (OOP) Design</div>
+        <div class="slide-subtitle">Domain modeling, polymorphism, and behavioral specialization</div>
+      </div>
+      <div class="slide-body">
+        <div class="grid-2">
+          <div class="card card-cyan">
+            <h3>Domain Class Hierarchy</h3>
+            <pre class="code-box">
+              Account (Abstract Base Class)
+              â”œâ”€â”€ m_accountNumber : string
+              â”œâ”€â”€ m_holderName    : string
+              â”œâ”€â”€ m_balance       : double
+              â”œâ”€â”€ m_isActive      : bool
+              â”œâ”€â”€ virtual bool withdraw(...) = 0
+              â””â”€â”€ virtual void calculateInterest(...) = 0
+                       /                    \
+                      /                      \
+      SavingsAccount                CurrentAccount
+      â”œâ”€â”€ m_interestRate (4.0%)     â”œâ”€â”€ m_overdraftLimit ($1000)
+      â”œâ”€â”€ m_minimumBalance ($500)   â””â”€â”€ Overdraft validation
+      â””â”€â”€ Min-balance check
+            </pre>
+            <div style="margin-top: 10px; font-size: 12.5px; color: var(--text-sub);">
+              <strong>Exception Hierarchy:</strong> <code>BankingException</code> &rarr; <code>InvalidAmountException</code>, <code>InsufficientFundsException</code>, <code>AccountBlockedException</code>, <code>EntityNotFoundException</code>.
+            </div>
+          </div>
+
+          <div class="card card-emerald">
+            <h3>Key OOP Principles Demonstrated</h3>
+            <ul class="clean-list">
+              <li><strong>Encapsulation:</strong> Private data members (<code>m_balance</code>, <code>m_pinHash</code>) are strictly protected. State mutations occur exclusively via validated public member functions.</li>
+              <li><strong>Abstraction:</strong> <code>Account</code> exposes a clean public interface (<code>deposit</code>, <code>withdraw</code>, <code>calculateInterest</code>) while encapsulating double-entry logging mechanics.</li>
+              <li><strong>Inheritance:</strong> <code>SavingsAccount</code> and <code>CurrentAccount</code> inherit common accounting logic while extending specialized banking fields.</li>
+              <li><strong>Polymorphism &amp; Virtual Dispatch:</strong> Dynamic dispatch via <code>std::shared_ptr&lt;Account&gt;</code> ensures correct derived withdrawal limits and interest rates execute at runtime.</li>
+              <li><strong>Centralized Exception Handling:</strong> Domain exceptions are caught in <code>HttpServer.cpp</code> and mapped to HTTP status codes (400, 401, 403, 404, 422).</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SLIDE 7: DSA ARCHITECTURE -->
+    <div class="slide" id="slide-7">
+      <div class="slide-header">
+        <div class="slide-num">Slide 07</div>
+        <div class="slide-title">Data Structures &amp; Algorithms Architecture</div>
+        <div class="slide-subtitle">Container-to-problem mapping across the C++ engine (docs/diagrams/03_dsa_architecture.svg)</div>
+      </div>
+      <div class="slide-body">
+        <div class="diagram-frame">
+          <img src="../diagrams/03_dsa_architecture.svg" alt="DSA Architecture Diagram">
+        </div>
+      </div>
+    </div>
+
+    <!-- SLIDE 8: DSA COMPLEXITY TABLE -->
+    <div class="slide" id="slide-8">
+      <div class="slide-header">
+        <div class="slide-num">Slide 08</div>
+        <div class="slide-title">DSA Complexity &amp; Algorithmic Rigor</div>
+        <div class="slide-subtitle">Theoretical bounds and measured performance benchmarks</div>
+      </div>
+      <div class="slide-body">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>Data Structure / Algorithm</th>
+              <th>Actual Banking Application</th>
+              <th>Time Complexity</th>
+              <th>Space Complexity</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>std::vector&lt;Transaction&gt;</strong></td>
+              <td>Chronological transaction history ledger</td>
+              <td><span class="badge badge-emerald">O(1) amortized append</span></td>
+              <td>O(N) contiguous</td>
+            </tr>
+            <tr>
+              <td><strong>std::unordered_map&lt;string, Account*&gt;</strong></td>
+              <td>Direct customer and account lookup</td>
+              <td><span class="badge badge-emerald">O(1) average</span> (O(N) worst)</td>
+              <td>O(N) hash buckets</td>
+            </tr>
+            <tr>
+              <td><strong>std::map&lt;string, double&gt;</strong></td>
+              <td>Sorted category spending summary</td>
+              <td><span class="badge">O(log K) insert/search</span></td>
+              <td>O(K) Red-Black tree</td>
+            </tr>
+            <tr>
+              <td><strong>std::set&lt;string&gt;</strong></td>
+              <td>Unique counterparty deduplication</td>
+              <td><span class="badge">O(log U) uniqueness</span></td>
+              <td>O(U) balanced BST</td>
+            </tr>
+            <tr>
+              <td><strong>std::queue&lt;BankingRequest&gt;</strong></td>
+              <td>Administrative request approval pipeline</td>
+              <td><span class="badge badge-emerald">O(1) enqueue/dequeue</span></td>
+              <td>O(R) sequential</td>
+            </tr>
+            <tr>
+              <td><strong>std::stack&lt;TransactionReversal&gt;</strong></td>
+              <td>Cascading transaction undo engine</td>
+              <td><span class="badge badge-emerald">O(1) push/pop</span></td>
+              <td>O(S) sequential</td>
+            </tr>
+            <tr>
+              <td><strong>Binary Search (std::lower_bound)</strong></td>
+              <td>Date-range queries on sorted ledgers</td>
+              <td><span class="badge">O(log N) comparisons</span></td>
+              <td>O(1) auxiliary</td>
+            </tr>
+            <tr>
+              <td><strong>Directed Graph (Adjacency List)</strong></td>
+              <td>Transaction capital flow network</td>
+              <td><span class="badge badge-emerald">O(1) add edge</span></td>
+              <td>O(V + E) adj list</td>
+            </tr>
+            <tr>
+              <td><strong>DFS Cycle Detection</strong></td>
+              <td>Forensic AML circular ring detection</td>
+              <td><span class="badge badge-rose">O(V + E) traversal</span></td>
+              <td>O(V) recursion</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <div class="alert-box alert-amber">
+          <strong>Important Academic Distinction:</strong> Measured benchmark performance (e.g. Binary Search executing ~293x faster than linear scan across 5,000 items) and asymptotic Big-O complexity (O(log N) vs O(N)) are fundamentally different concepts. Benchmarks measure hardware execution speed on specific CPUs; Big-O defines mathematical growth limits.
+        </div>
+      </div>
+    </div>
+
+    <!-- SLIDE 9: BANKING OPERATIONS -->
+    <div class="slide" id="slide-9">
+      <div class="slide-header">
+        <div class="slide-num">Slide 09</div>
+        <div class="slide-title">Core Banking Operations &amp; Workflow</div>
+        <div class="slide-subtitle">Transactional integrity, balance enforcement, and cascading rollbacks</div>
+      </div>
+      <div class="slide-body">
+        <div class="workflow-strip">
+          <div class="workflow-step active">
+            <div class="num">Step 1</div>
+            <div class="name">Customer Register</div>
+          </div>
+          <div class="workflow-arrow">&rarr;</div>
+          <div class="workflow-step active">
+            <div class="num">Step 2</div>
+            <div class="name">PBKDF2 Login</div>
+          </div>
+          <div class="workflow-arrow">&rarr;</div>
+          <div class="workflow-step active">
+            <div class="num">Step 3</div>
+            <div class="name">Account Select</div>
+          </div>
+          <div class="workflow-arrow">&rarr;</div>
+          <div class="workflow-step active">
+            <div class="num">Step 4</div>
+            <div class="name">Deposit / Withdraw / Transfer</div>
+          </div>
+          <div class="workflow-arrow">&rarr;</div>
+          <div class="workflow-step active">
+            <div class="num">Step 5</div>
+            <div class="name">Ledger Audit</div>
+          </div>
+          <div class="workflow-arrow">&rarr;</div>
+          <div class="workflow-step active">
+            <div class="num">Step 6</div>
+            <div class="name">Undo Reversal</div>
+          </div>
+        </div>
+
+        <div class="grid-3">
+          <div class="card card-cyan">
+            <h3>Account Specialization</h3>
+            <ul class="clean-list">
+              <li><strong>Savings Account:</strong> Enforces minimum balance ($500.00). Withdrawals violating threshold are rejected with <code>HTTP 422</code>.</li>
+              <li><strong>Current Account:</strong> Authorized overdraft limit ($1,000.00). Permits negative balances up to authorized threshold.</li>
+              <li><strong>Account State:</strong> Blocked accounts reject all transactions with <code>HTTP 403 Forbidden</code>.</li>
+            </ul>
+          </div>
+          <div class="card card-emerald">
+            <h3>Atomic Fund Transfers</h3>
+            <ul class="clean-list">
+              <li><strong>Validation:</strong> Verifies source/destination accounts and checks self-transfers (returns <code>HTTP 400</code>).</li>
+              <li><strong>Synchronous Execution:</strong> Debits source (<code>TRANSFER_OUT</code>) and credits destination (<code>TRANSFER_IN</code>) atomically.</li>
+              <li><strong>Audit Logging:</strong> Appends dual entries with unique transaction IDs to immutable ledgers.</li>
+            </ul>
+          </div>
+          <div class="card card-amber">
+            <h3>LIFO Reversal Stack</h3>
+            <ul class="clean-list">
+              <li><strong>Non-Destructive Undo:</strong> Banking compliance forbids deleting history; reversals execute compensating financial entries.</li>
+              <li><strong>LIFO Sequence:</strong> Stack pops the most recent operation first, ensuring intermediate dependencies remain valid.</li>
+              <li><strong>Balance Restoration:</strong> Perfectly restores pre-transaction account balances.</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SLIDE 10: SMART ANALYTICS & AML -->
+    <div class="slide" id="slide-10">
+      <div class="slide-header">
+        <div class="slide-num">Slide 10</div>
+        <div class="slide-title">Smart Analytics &amp; Anti-Money Laundering (AML)</div>
+        <div class="slide-subtitle">Financial health grading and forensic graph cycle detection</div>
+      </div>
+      <div class="slide-body">
+        <div class="grid-2">
+          <div class="card card-cyan">
+            <h3>Financial Health Auditor (SmartAuditor)</h3>
+            <ul class="clean-list">
+              <li><strong>Inflow &amp; Outflow Tracking:</strong> Aggregates deposits, salary credits, withdrawals, and merchant payments.</li>
+              <li><strong>Savings Rate Formulation:</strong>
+                <div style="background: #090d16; padding: 6px 12px; border-radius: 4px; font-family: monospace; color: #38bdf8; margin: 6px 0;">
+                  Savings Rate = (Net Savings / Total Inflow) * 100%
+                </div>
+              </li>
+              <li><strong>Health Grading:</strong> Grades account health: <code>EXCELLENT</code>, <code>HEALTHY</code>, <code>MODERATE</code>, <code>NEEDS_ATTENTION</code>, <code>CRITICAL</code>.</li>
+              <li><strong>Automated Advisory:</strong> Delivers actionable financial guidance (e.g. building 6-month emergency liquidity reserves).</li>
+            </ul>
+          </div>
+
+          <div class="card card-rose">
+            <h3>AML Transaction Graph &amp; Cycle Detection</h3>
+            <ul class="clean-list">
+              <li><strong>Graph Modeling:</strong> Accounts form Vertices (V); inter-account fund transfers form Directed Edges (E = u &rarr; v) with monetary weights.</li>
+              <li><strong>Wash Trading &amp; Layering:</strong> Criminals route dirty money through multiple intermediary accounts to obscure origin.</li>
+              <li><strong>3-Color DFS Cycle Algorithm:</strong>
+                <div style="background: #090d16; padding: 6px 12px; border-radius: 4px; font-family: monospace; color: #fda4af; margin: 6px 0;">
+                  Account A &rarr; Account B &rarr; Account C &rarr; Account A
+                </div>
+                Uses recursion-stack state tracking (<code>visited</code> and <code>inStack</code>) in O(V + E) time.
+              </li>
+              <li><strong>Live React Visualizer:</strong> Renders the directed network dynamically and flags laundering rings with red alert badges.</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SLIDE 11: AUTHENTICATION & SECURITY -->
+    <div class="slide" id="slide-11">
+      <div class="slide-header">
+        <div class="slide-num">Slide 11</div>
+        <div class="slide-title">Authentication &amp; Security Architecture</div>
+        <div class="slide-subtitle">Cryptographic PIN hashing vs Admin API authorization separation (docs/diagrams/02_auth_security_flow.svg)</div>
+      </div>
+      <div class="slide-body" style="flex-direction: row; gap: 24px; align-items: stretch;">
+        <div class="diagram-frame" style="flex: 1.4;">
+          <img src="../diagrams/02_auth_security_flow.svg" alt="Auth Flow Diagram">
+        </div>
+        <div style="flex: 1; display: flex; flex-direction: column; gap: 14px; justify-content: center;">
+          <div class="card card-emerald">
+            <h3>Customer PBKDF2 PIN Security</h3>
+            <ul class="clean-list">
+              <li><strong>Key Stretching:</strong> 10,000 rounds of HMAC-SHA256 (NIST SP 800-132).</li>
+              <li><strong>Unique Salt:</strong> 128-bit CSPRNG salt generated via Windows CryptoAPI <code>CryptGenRandom</code>.</li>
+              <li><strong>Constant-Time Equals:</strong> Bitwise XOR byte comparison neutralizes side-channel timing attacks.</li>
+              <li><strong>Zero Plaintext Exposure:</strong> Stored as <code>$pbkdf2-sha256$10000$&lt;salt&gt;$&lt;hash&gt;</code>. Never exposed in API payloads or SQL dumps.</li>
+            </ul>
+          </div>
+
+          <div class="card card-purple">
+            <h3>Admin API Authorization</h3>
+            <ul class="clean-list">
+              <li><strong>Centralized Middleware:</strong> Intercepts all <code>/api/admin/*</code> routes.</li>
+              <li><strong>Header Inspection:</strong> Validates incoming <code>X-Admin-Key</code> header.</li>
+              <li><strong>Strict Rejection:</strong> Invalid keys immediately return <code>HTTP 401 Unauthorized</code>.</li>
+              <li><strong>Customer Decoupling:</strong> Customer endpoints never require or expose admin credentials.</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SLIDE 12: DATABASE & 3NF -->
+    <div class="slide" id="slide-12">
+      <div class="slide-header">
+        <div class="slide-num">Slide 12</div>
+        <div class="slide-title">Relational Database Architecture (MySQL 3NF)</div>
+        <div class="slide-subtitle">Entity normalization, foreign key constraints, and B-Tree indexing (docs/diagrams/04_database_architecture.svg)</div>
+      </div>
+      <div class="slide-body" style="flex-direction: row; gap: 24px; align-items: stretch;">
+        <div class="diagram-frame" style="flex: 1.4;">
+          <img src="../diagrams/04_database_architecture.svg" alt="Database Architecture Diagram">
+        </div>
+        <div style="flex: 1; display: flex; flex-direction: column; gap: 12px; justify-content: center;">
+          <div class="card card-cyan" style="padding: 12px 16px;">
+            <h3 style="font-size: 14px; margin-bottom: 4px;">Third Normal Form (3NF) Compliance</h3>
+            <p style="font-size: 12px; color: var(--text-sub);">
+              1NF (atomic scalar fields), 2NF (no partial key dependencies), and 3NF (transitive dependencies eliminated by isolating customer contact metadata into <code>customers</code>).
+            </p>
+          </div>
+          <div class="card card-emerald" style="padding: 12px 16px;">
+            <h3 style="font-size: 14px; margin-bottom: 4px;">Referential Integrity &amp; Cascade Rules</h3>
+            <p style="font-size: 12px; color: var(--text-sub);">
+              <code>accounts.customer_id</code> references <code>customers.customer_id</code> with <code>ON DELETE CASCADE ON UPDATE CASCADE</code>. Verified: zero orphan accounts.
+            </p>
+          </div>
+          <div class="card card-amber" style="padding: 12px 16px;">
+            <h3 style="font-size: 14px; margin-bottom: 4px;">B-Tree Indexing Strategy</h3>
+            <p style="font-size: 12px; color: var(--text-sub);">
+              Secondary B-Tree indexes on <code>customer_id</code>, <code>balance</code>, <code>from_account</code>, and <code>timestamp</code> accelerate statement and dashboard queries to O(log N).
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SLIDE 13: TESTING & RESULTS -->
+    <div class="slide" id="slide-13">
+      <div class="slide-header">
+        <div class="slide-num">Slide 13</div>
+        <div class="slide-title">Testing &amp; Verification Results</div>
+        <div class="slide-subtitle">Rigorous automated verification suite: 12 / 12 Test Suites PASSED (100% Integrity)</div>
+      </div>
+      <div class="slide-body">
+        <div style="background: rgba(6, 78, 59, 0.2); border: 1px solid var(--emerald); border-radius: 8px; padding: 12px 20px; display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px;">
+          <div style="display: flex; align-items: center; gap: 10px;">
+            <span style="color: var(--emerald); font-size: 20px; font-weight: 900;">[PASS]</span>
+            <span style="font-size: 15px; font-weight: 800; color: var(--text-main);">ALL 12 VERIFICATION TEST SUITES PASSED WITH 100% INTEGRITY</span>
+          </div>
+          <span class="badge badge-emerald">0 Warnings | 0 Errors | GCC 6.3.0 C++17</span>
+        </div>
+
+        <div class="grid-3">
+          <div class="card card-emerald" style="padding: 14px;">
+            <h3 style="font-size: 13.5px; margin-bottom: 6px;">OOP &amp; Authentication</h3>
+            <ul class="clean-list" style="font-size: 12.5px;">
+              <li><strong>[1/12] OOP Polymorphic Dispatch:</strong> PASSED</li>
+              <li><strong>[2/12] Customer PBKDF2 Auth:</strong> PASSED</li>
+              <li><strong>[3/12] std::queue FIFO Order:</strong> PASSED</li>
+              <li><strong>[4/12] std::stack LIFO Rollback:</strong> PASSED</li>
+            </ul>
+          </div>
+          <div class="card card-emerald" style="padding: 14px;">
+            <h3 style="font-size: 13.5px; margin-bottom: 6px;">DSA &amp; AML Algorithms</h3>
+            <ul class="clean-list" style="font-size: 12.5px;">
+              <li><strong>[5/12] std::map Category Summary:</strong> PASSED</li>
+              <li><strong>[6/12] std::set Deduplication:</strong> PASSED</li>
+              <li><strong>[7/12] Directed Graph &amp; DFS Cycles:</strong> PASSED</li>
+              <li><strong>[8/12] Binary Search O(log N):</strong> PASSED</li>
+            </ul>
+          </div>
+          <div class="card card-emerald" style="padding: 14px;">
+            <h3 style="font-size: 13.5px; margin-bottom: 6px;">Full-Stack &amp; Persistence</h3>
+            <ul class="clean-list" style="font-size: 12.5px;">
+              <li><strong>[9/12] C++ REST API Routing:</strong> PASSED</li>
+              <li><strong>[10/12] MySQL 3NF Schema &amp; Dump:</strong> PASSED</li>
+              <li><strong>[11/12] Frontend Static Asset Delivery:</strong> PASSED</li>
+              <li><strong>[12/12] End-to-End ACID Workflow:</strong> PASSED</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SLIDE 14: LIMITATIONS & FUTURE SCOPE -->
+    <div class="slide" id="slide-14">
+      <div class="slide-header">
+        <div class="slide-num">Slide 14</div>
+        <div class="slide-title">Limitations &amp; Future Scope</div>
+        <div class="slide-subtitle">Distinguishing the educational prototype scope from production enterprise infrastructure</div>
+      </div>
+      <div class="slide-body">
+        <div class="grid-2">
+          <div class="card card-amber">
+            <h3>Current Educational Limitations</h3>
+            <ul class="clean-list">
+              <li><strong>Transport Security:</strong> The embedded Winsock2 server operates over HTTP. Production banking mandates TLS 1.3 / HTTPS to encrypt network traffic.</li>
+              <li><strong>Memory-Hard KDF:</strong> PBKDF2 was chosen for portability; enterprise deployments prefer <strong>Argon2id</strong> (PHC winner) to resist ASIC/FPGA hardware attacks.</li>
+              <li><strong>Administrative Auth:</strong> Uses shared <code>X-Admin-Key</code> header; production requires asymmetric RS256 JWTs or OAuth2 bearer tokens with refresh rotation.</li>
+              <li><strong>Rate Limiting:</strong> No exponential backoff or 3-strike account lockout against brute-force attacks.</li>
+              <li><strong>Persistence:</strong> Flat-file staging is designed for standalone offline operation, not multi-node clustered persistence.</li>
+            </ul>
+          </div>
+
+          <div class="card card-cyan">
+            <h3>Future Engineering Enhancements</h3>
+            <ul class="clean-list">
+              <li><strong>HTTPS / TLS 1.3 Sockets:</strong> Integrate OpenSSL / Windows SChannel to encrypt data in transit.</li>
+              <li><strong>Argon2id Password Hashing:</strong> Upgrade key derivation with memory-hard parameters ($m=64\text{MB}$, $t=3$, $p=4$).</li>
+              <li><strong>Account Lockout Policy:</strong> Enforce 3-strike lockout and CAPTCHA challenges on consecutive failed PIN attempts.</li>
+              <li><strong>Machine Learning AML Scoring:</strong> Real-time Graph Neural Network (GNN) transaction scoring for fraud classification.</li>
+              <li><strong>Cloud Microservices:</strong> Decompose services with Docker containers and deploy on Kubernetes.</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SLIDE 15: CONCLUSION -->
+    <div class="slide title-slide" id="slide-15">
+      <div style="margin-bottom: 20px;">
+        <span class="badge badge-emerald" style="font-size: 13px; padding: 6px 14px;">PROJECT CONCLUSION &amp; VIVA DEFENSE</span>
+      </div>
+      <h1 style="font-size: 40px; margin-bottom: 16px;">Smart Banking Management System</h1>
+      <p style="font-size: 16px; color: var(--text-sub); max-width: 800px; line-height: 1.6; margin: 0 auto 30px auto;">
+        Successfully demonstrates how modern C++17 systems programming, classical Object-Oriented principles, optimal Data Structures &amp; Algorithms, cryptographic security, and 3NF database normalization can seamlessly power a modern, responsive web application.
+      </p>
+
+      <h2 style="font-size: 32px; color: var(--cyan); margin-bottom: 8px;">Thank You!</h2>
+      <p style="font-size: 18px; color: var(--amber); font-weight: 700; margin-bottom: 24px;">Questions &amp; Discussion</p>
+
+      <div style="display: flex; gap: 12px; justify-content: center; flex-wrap: wrap;">
+        <span class="badge">Docs: docs/dsa_documentation.md</span>
+        <span class="badge">Docs: docs/database_documentation.md</span>
+        <span class="badge">Diagrams: docs/diagrams/</span>
+        <span class="badge">Test Suite: SmartBankingSystem.exe --test</span>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Bottom Navigation Bar -->
+  <div class="pres-footer">
+    <button class="btn" id="btn-prev" onclick="prevSlide()">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+        <polyline points="15 18 9 12 15 6"></polyline>
+      </svg>
+      <span>Previous</span>
+    </button>
+
+    <div class="nav-dots" id="nav-dots">
+      <!-- Generated dynamically -->
+    </div>
+
+    <button class="btn btn-primary" id="btn-next" onclick="nextSlide()">
+      <span>Next</span>
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+        <polyline points="9 18 15 12 9 6"></polyline>
+      </svg>
+    </button>
+  </div>
+
+  <!-- Interactive Slide Navigation Script -->
+  <script>
+    let currentSlide = 1;
+    const totalSlides = 15;
+
+    function showSlide(index) {
+      if (index < 1) index = 1;
+      if (index > totalSlides) index = totalSlides;
+      currentSlide = index;
+
+      document.querySelectorAll('.slide').forEach((slide, idx) => {
+        slide.classList.toggle('active', idx + 1 === currentSlide);
+      });
+
+      document.querySelectorAll('.dot').forEach((dot, idx) => {
+        dot.classList.toggle('active', idx + 1 === currentSlide);
+      });
+
+      document.getElementById('slide-indicator').textContent = 
+        `Slide ${String(currentSlide).padStart(2, '0')} / ${totalSlides}`;
+
+      document.getElementById('btn-prev').disabled = (currentSlide === 1);
+      document.getElementById('btn-next').disabled = (currentSlide === totalSlides);
+    }
+
+    function nextSlide() { showSlide(currentSlide + 1); }
+    function prevSlide() { showSlide(currentSlide - 1); }
+
+    // Build Dots Navigation
+    const dotsContainer = document.getElementById('nav-dots');
+    for (let i = 1; i <= totalSlides; i++) {
+      const dot = document.createElement('div');
+      dot.className = 'dot' + (i === 1 ? ' active' : '');
+      dot.title = `Slide ${i}`;
+      dot.onclick = () => showSlide(i);
+      dotsContainer.appendChild(dot);
+    }
+
+    // Keyboard Shortcuts
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowRight' || e.key === ' ' || e.key === 'Enter' || e.key === 'PageDown') {
+        nextSlide();
+      } else if (e.key === 'ArrowLeft' || e.key === 'Backspace' || e.key === 'PageUp') {
+        prevSlide();
+      } else if (e.key === 'Home') {
+        showSlide(1);
+      } else if (e.key === 'End') {
+        showSlide(totalSlides);
+      } else if (e.key === 'f' || e.key === 'F') {
+        toggleFullscreen();
+      }
+    });
+
+    // Fullscreen Toggle
+    function toggleFullscreen() {
+      if (!document.fullscreenElement) {
+        document.documentElement.requestFullscreen().catch(() => {});
+      } else {
+        document.exitFullscreen().catch(() => {});
+      }
+    }
+    document.getElementById('btn-fullscreen').onclick = toggleFullscreen;
+
+    showSlide(1);
+  </script>
+</body>
+</html>

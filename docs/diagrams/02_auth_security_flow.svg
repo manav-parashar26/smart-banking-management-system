@@ -1,0 +1,131 @@
+﻿<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="100%" height="100%" style="background:#090d16; font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;">
+  <defs>
+    <linearGradient id="bgGrad2" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#090d16"/>
+      <stop offset="100%" stop-color="#0f172a"/>
+    </linearGradient>
+    <filter id="shadow2" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="6" stdDeviation="5" flood-color="#000" flood-opacity="0.5"/>
+    </filter>
+    <marker id="arrowBlue" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1 L 10 5 L 0 9 z" fill="#38bdf8"/>
+    </marker>
+    <marker id="arrowRed" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1 L 10 5 L 0 9 z" fill="#f43f5e"/>
+    </marker>
+    <marker id="arrowGreen" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1 L 10 5 L 0 9 z" fill="#10b981"/>
+    </marker>
+  </defs>
+
+  <rect width="1280" height="720" fill="url(#bgGrad2)"/>
+  <text x="640" y="42" fill="#f8fafc" font-size="24" font-weight="800" text-anchor="middle">AUTHENTICATION &amp; AUTHORIZATION ARCHITECTURE</text>
+  <text x="640" y="68" fill="#94a3b8" font-size="14" font-weight="500" text-anchor="middle">Complete Separation of Customer PBKDF2 PIN Verification &amp; Admin X-Admin-Key Authorization</text>
+
+  <!-- COLUMN 1: CUSTOMER AUTHENTICATION (LEFT) -->
+  <g filter="url(#shadow2)">
+    <rect x="80" y="95" width="530" height="585" rx="12" fill="#0f172a" stroke="#0284c7" stroke-width="2"/>
+    <rect x="80" y="95" width="530" height="35" rx="12" fill="#0369a1"/>
+    <text x="345" y="118" fill="#ffffff" font-size="14" font-weight="800" text-anchor="middle">1. RETAIL CUSTOMER AUTHENTICATION (PUBLIC)</text>
+
+    <!-- Step 1: Customer Input -->
+    <rect x="110" y="145" width="470" height="50" rx="8" fill="#1e293b" stroke="#334155"/>
+    <text x="125" y="166" fill="#38bdf8" font-size="12" font-weight="700">STEP 1: USER CREDENTIAL SUBMISSION</text>
+    <text x="125" y="184" fill="#f1f5f9" font-size="12">Customer submits Customer ID ('CUST-101') and 4-Digit PIN ('1234') in React</text>
+
+    <line x1="345" y1="195" x2="345" y2="215" stroke="#38bdf8" stroke-width="2" marker-end="url(#arrowBlue)"/>
+
+    <!-- Step 2: REST Dispatch -->
+    <rect x="110" y="220" width="470" height="50" rx="8" fill="#1e293b" stroke="#334155"/>
+    <text x="125" y="241" fill="#38bdf8" font-size="12" font-weight="700">STEP 2: HTTP DISPATCH (NO ADMIN KEY REQUIRED)</text>
+    <text x="125" y="259" fill="#f1f5f9" font-size="12">POST /api/auth/login &#8594; HttpServer routes to BankSystem::authenticateCustomer()</text>
+
+    <line x1="345" y1="270" x2="345" y2="290" stroke="#38bdf8" stroke-width="2" marker-end="url(#arrowBlue)"/>
+
+    <!-- Step 3: Salt & Hash Retrieval -->
+    <rect x="110" y="295" width="470" height="50" rx="8" fill="#1e293b" stroke="#334155"/>
+    <text x="125" y="316" fill="#38bdf8" font-size="12" font-weight="700">STEP 3: STORED CREDENTIAL LOOKUP</text>
+    <text x="125" y="334" fill="#f1f5f9" font-size="12">CustomerManager retrieves $pbkdf2-sha256$10000$&lt;salt&gt;$&lt;hash&gt; from memory</text>
+
+    <line x1="345" y1="345" x2="345" y2="365" stroke="#38bdf8" stroke-width="2" marker-end="url(#arrowBlue)"/>
+
+    <!-- Step 4: SecurityHelper Crypto Execution -->
+    <rect x="110" y="370" width="470" height="85" rx="8" fill="#1e293b" stroke="#4f46e5" stroke-width="1.5"/>
+    <text x="125" y="391" fill="#a5b4fc" font-size="12" font-weight="700">STEP 4: CRYPTOGRAPHIC VERIFICATION (SecurityHelper.cpp)</text>
+    <text x="125" y="410" fill="#cbd5e1" font-size="11.5">&#8226; Algorithm: PBKDF2-HMAC-SHA256 (NIST SP 800-132 / RFC 2898)</text>
+    <text x="125" y="427" fill="#cbd5e1" font-size="11.5">&#8226; Work Factor: 10,000 HMAC rounds on candidate PIN + extracted 128-bit salt</text>
+    <text x="125" y="444" fill="#cbd5e1" font-size="11.5">&#8226; Side-Channel Defense: constantTimeEquals() byte-by-byte bitwise XOR</text>
+
+    <line x1="240" y1="455" x2="240" y2="480" stroke="#10b981" stroke-width="2" marker-end="url(#arrowGreen)"/>
+    <line x1="450" y1="455" x2="450" y2="480" stroke="#f43f5e" stroke-width="2" marker-end="url(#arrowRed)"/>
+
+    <!-- Outcome: Success vs Failure -->
+    <rect x="110" y="485" width="225" height="75" rx="8" fill="#064e3b" stroke="#10b981"/>
+    <text x="222" y="506" fill="#6ee7b7" font-size="12" font-weight="700" text-anchor="middle">MATCH: HTTP 200 OK</text>
+    <text x="222" y="525" fill="#f1f5f9" font-size="11" text-anchor="middle">Returns AuthResponseDTO</text>
+    <text x="222" y="542" fill="#a7f3d0" font-size="10.5" text-anchor="middle">Unlocks Isolated Customer Portal</text>
+
+    <rect x="355" y="485" width="225" height="75" rx="8" fill="#4c0519" stroke="#f43f5e"/>
+    <text x="467" y="506" fill="#fda4af" font-size="12" font-weight="700" text-anchor="middle">MISMATCH: HTTP 401</text>
+    <text x="467" y="525" fill="#f1f5f9" font-size="11" text-anchor="middle">AuthenticationException</text>
+    <text x="467" y="542" fill="#fecdd3" font-size="10.5" text-anchor="middle">"Invalid credentials provided"</text>
+
+    <!-- Zero Plaintext Guarantee Badge -->
+    <rect x="110" y="580" width="470" height="75" rx="8" fill="#022c22" stroke="#059669"/>
+    <text x="345" y="605" fill="#34d399" font-size="13" font-weight="800" text-anchor="middle">&#10004; ZERO PLAINTEXT CREDENTIAL GUARANTEE</text>
+    <text x="345" y="624" fill="#a7f3d0" font-size="11.5" text-anchor="middle">Plaintext PIN is NEVER persisted to disk, NEVER logged, and NEVER</text>
+    <text x="345" y="641" fill="#a7f3d0" font-size="11.5" text-anchor="middle">included in any API response or Data Transfer Object (DTO).</text>
+  </g>
+
+  <!-- COLUMN 2: ADMIN AUTHORIZATION (RIGHT) -->
+  <g filter="url(#shadow2)">
+    <rect x="670" y="95" width="530" height="585" rx="12" fill="#0f172a" stroke="#d97706" stroke-width="2"/>
+    <rect x="670" y="95" width="530" height="35" rx="12" fill="#b45309"/>
+    <text x="935" y="118" fill="#ffffff" font-size="14" font-weight="800" text-anchor="middle">2. SYSTEM ADMIN AUTHORIZATION (GUARDED)</text>
+
+    <!-- Step 1: Admin Dashboard Action -->
+    <rect x="700" y="145" width="470" height="50" rx="8" fill="#1e293b" stroke="#334155"/>
+    <text x="715" y="166" fill="#fbbf24" font-size="12" font-weight="700">STEP 1: ADMIN ACTION TRIGGERED</text>
+    <text x="715" y="184" fill="#f1f5f9" font-size="12">Admin triggers action (Approve Loan, Undo Transaction, Load AML Graph)</text>
+
+    <line x1="935" y1="195" x2="935" y2="215" stroke="#fbbf24" stroke-width="2" marker-end="url(#arrowBlue)"/>
+
+    <!-- Step 2: Automatic Header Injection -->
+    <rect x="700" y="220" width="470" height="50" rx="8" fill="#1e293b" stroke="#334155"/>
+    <text x="715" y="241" fill="#fbbf24" font-size="12" font-weight="700">STEP 2: HEADER INJECTION IN api.js</text>
+    <text x="715" y="259" fill="#f1f5f9" font-size="12">If route starts with /api/admin/* &#8594; injects Header: X-Admin-Key: admin123</text>
+
+    <line x1="935" y1="270" x2="935" y2="290" stroke="#fbbf24" stroke-width="2" marker-end="url(#arrowBlue)"/>
+
+    <!-- Step 3: Centralized Middleware Interceptor -->
+    <rect x="700" y="295" width="470" height="70" rx="8" fill="#1e293b" stroke="#f59e0b"/>
+    <text x="715" y="316" fill="#fde68a" font-size="12" font-weight="700">STEP 3: CENTRALIZED C++ GATEWAY MIDDLEWARE</text>
+    <text x="715" y="334" fill="#cbd5e1" font-size="11.5">HttpServer.cpp intercepts route: if (req.path.rfind("/api/admin/", 0) == 0)</text>
+    <text x="715" y="351" fill="#cbd5e1" font-size="11.5">Inspects header: string key = req.getHeader("X-Admin-Key")</text>
+
+    <line x1="825" y1="365" x2="825" y2="395" stroke="#10b981" stroke-width="2" marker-end="url(#arrowGreen)"/>
+    <line x1="1045" y1="365" x2="1045" y2="395" stroke="#f43f5e" stroke-width="2" marker-end="url(#arrowRed)"/>
+
+    <!-- Step 4: Decision Tree -->
+    <rect x="700" y="400" width="225" height="70" rx="8" fill="#064e3b" stroke="#10b981"/>
+    <text x="812" y="421" fill="#6ee7b7" font-size="12" font-weight="700" text-anchor="middle">VALID ADMIN KEY</text>
+    <text x="812" y="439" fill="#f1f5f9" font-size="11" text-anchor="middle">Key matches m_adminKey</text>
+    <text x="812" y="456" fill="#a7f3d0" font-size="10.5" text-anchor="middle">Proceed to Admin Handler</text>
+
+    <rect x="945" y="400" width="225" height="70" rx="8" fill="#4c0519" stroke="#f43f5e"/>
+    <text x="1057" y="421" fill="#fda4af" font-size="12" font-weight="700" text-anchor="middle">MISSING / INVALID KEY</text>
+    <text x="1057" y="439" fill="#f1f5f9" font-size="11" text-anchor="middle">HTTP 401 Unauthorized</text>
+    <text x="1057" y="456" fill="#fecdd3" font-size="10.5" text-anchor="middle">Execution halted immediately</text>
+
+    <!-- Guarded Handlers Box -->
+    <rect x="700" y="490" width="470" height="165" rx="8" fill="#1e293b" stroke="#334155"/>
+    <text x="715" y="514" fill="#fbbf24" font-size="12" font-weight="700">GUARDED ADMINISTRATIVE ENDPOINTS:</text>
+    
+    <text x="720" y="540" fill="#f1f5f9" font-size="12">&#8226; <tspan fill="#38bdf8" font-family="monospace">GET  /api/admin/requests</tspan> &#8594; Inspect FIFO pending queue</text>
+    <text x="720" y="565" fill="#f1f5f9" font-size="12">&#8226; <tspan fill="#38bdf8" font-family="monospace">POST /api/admin/process-request</tspan> &#8594; Approve / Reject requests</text>
+    <text x="720" y="590" fill="#f1f5f9" font-size="12">&#8226; <tspan fill="#38bdf8" font-family="monospace">POST /api/admin/undo</tspan> &#8594; Pop LIFO undo stack (Reversal)</text>
+    <text x="720" y="615" fill="#f1f5f9" font-size="12">&#8226; <tspan fill="#38bdf8" font-family="monospace">GET  /api/admin/network-graph</tspan> &#8594; Retrieve AML graph topology</text>
+    
+    <text x="720" y="642" fill="#94a3b8" font-size="11">Configurable via environment variable: <tspan fill="#e2e8f0" font-family="monospace">SMART_BANKING_ADMIN_KEY</tspan></text>
+  </g>
+</svg>

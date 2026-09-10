@@ -1,0 +1,4 @@
+# SMART BANKING SYSTEM - ACCOUNT REGISTRY (VERSION 2.0)
+# AccountNo|AccountType|HolderName|Balance|IsActive|Param1|Param2
+CUR-1002|Current Account|Bob Builder|3410|1|1500|0.0
+SAV-1001|Savings Account|Alan Turing|57400|1|4|500

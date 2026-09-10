@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart Banking Management System — Full-Stack C++ & React</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/style.css">
+    
+    <!-- React 18, ReactDOM 18 & Babel Standalone for In-Browser JSX -->
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+</head>
+<body>
+    <div id="root">
+        <div class="loading-screen">
+            <div class="spinner"></div>
+            <h2>Initializing Smart Banking Engine...</h2>
+            <p>Connecting to C++17 REST Backend on port 8080</p>
+        </div>
+    </div>
+
+    <!-- Client-side API service layer -->
+    <script src="/api.js"></script>
+    
+    <!-- React Component Application (compiled via Babel) -->
+    <script type="text/babel" src="/App.js"></script>
+</body>
+</html>
